@@ -8,8 +8,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 @Controller
+@SessionAttributes("event")
 public class SimpleController {
 
     @GetMapping("/hello")
@@ -207,23 +209,54 @@ public class SimpleController {
      *
      * @param event
      * @return
+     *
+     * @SessionAttributes
+     * type or name 으로 지정하여 ,
+     * 해당 name값(type)에 해당하는 model에 값이 들어올경우 session에 담아준다.
+     *
+     * 해당 모델을 세션에서 지워야할 경우
+     * sessionStatus.setComplete(); 메서드로 알려주어야한다.
      */
     @PostMapping("/events/create")
     public String create(
             @Validated @ModelAttribute Event event
             , BindingResult bindingResult
+            , SessionStatus status
     ){
 
         if(bindingResult.hasErrors()){
             return "events/form";
         }
 
-        return "redirect:/events";
+        status.setComplete();
+
+        return "events/list";
     }
 
     @GetMapping("/events")
     public String events(){
         return "events/list";
     }
+
+    /**
+     * SessionAttribute
+     *
+     * SessionAttributes 와 ModelAttribute가 class LEVEL에서의 관리라면
+     *
+     * SessionAttribute는 Application LEVEL에서의 관리이다.
+     * Filter나 Interceptor등에서 세션에 담아준 정보를 가져올때 유용하다
+     * 타입커버전 지원.
+     *
+     * 해당하는 attribute가 없다면 400 Bad Request 발생.
+     * @param eventDTO
+     * @return
+     */
+    @GetMapping("/session")
+    @ResponseBody
+    public EventDTO session(@SessionAttribute EventDTO eventDTO) {
+        System.out.printf("eventDTO = %s",eventDTO.getName());
+        return eventDTO;
+    }
+
 
 }
