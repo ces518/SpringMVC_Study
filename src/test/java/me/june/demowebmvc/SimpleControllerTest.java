@@ -154,4 +154,16 @@ public class SimpleControllerTest {
                         .andExpect(jsonPath("$.name").value("hyeji bear"));
     }
 
+    @Test
+    public void template() throws  Exception {
+        // jsp가 아닌경우 servlet engine 없이 랜더링이 가능하기때문에 테스트 좀더 용이하다.
+
+        mockMvc.perform(get("/events/form"))
+                    .andDo(print())
+                // return 하는 뷰네임 체크
+                    .andExpect(view().name("events/form"))
+                // model에 events 라는 네임을가지는 어트리뷰트가있는지 체크
+                    .andExpect(model().attributeExists("events"));
+    }
+
 }

@@ -3,6 +3,7 @@ package me.june.demowebmvc;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -160,6 +161,8 @@ public class SimpleController {
      * Optional 을 지원한다.
      * String 이 아닌 데이터타입은 타입 컨버전을 지원한다.
      * 생략이 가능하다.
+     * Map<String,String>
+     * MultiValueMap<String,String>을 사용하여 모든 매개변수들을 받아올수 있다.
      * @param name
      * @return
      */
@@ -171,5 +174,13 @@ public class SimpleController {
         Event event = new Event();
         event.setName(name);
         return event;
+    }
+
+    @GetMapping("/events/form")
+    public String eventsForm(
+            Model model
+    ){
+        model.addAttribute("events",new Event());
+        return "events/form";
     }
 }

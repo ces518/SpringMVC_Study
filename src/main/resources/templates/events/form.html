@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http:/www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--
+    thymeleaf 문법
+    @{} url 표현식
+    ${} variable 표현식
+    *{} selection 표현식
+-->
+<form action="#" th:action="@{/events}" th:object="${events}">
+    <input type="text" title="name" th:field="*{name}"/>
+</form>
+</body>
+</html>
