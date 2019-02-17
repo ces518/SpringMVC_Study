@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -183,4 +184,36 @@ public class SimpleController {
         model.addAttribute("events",new Event());
         return "events/form";
     }
+
+
+    /**
+     * @ModelAttribute
+     * @RequestParam이 단일타입이라면 , ModelAttribute는 컴포짓타입이다.
+     * 여러개의 요청매개변수를 하나의 object로 받을수있다.
+     * 해당 객체를 새로만들때 사용할수 있다.
+     * 타입커버전 지원
+     * @Valid(JSR-303), @Validated(Spring) 을 사용하여 바인딩후 , 검증도 가능하다.
+     *
+     * 바인딩 에러나 , 검증 에러가 발생한뒤 핸들러메서드에서 처리하고싶다면,
+     * 해당 컴포짓 객체 바로 우측에다가 BindingResult를 아규먼트로 받아, 해당 처리 결과를 핸들링 할수있다.
+     *
+     * 생략이 가능하다.
+     *
+     * @param event
+     * @return
+     */
+    @PostMapping("/events/create")
+    @ResponseBody
+    public Event create(
+            @ModelAttribute Event event
+            , BindingResult bindingResult
+    ){
+
+        if(bindingResult.hasErrors()){
+            System.out.println("error!!!");
+        }
+
+        return event;
+    }
+
 }

@@ -166,4 +166,9 @@ public class SimpleControllerTest {
                     .andExpect(model().attributeExists("events"));
     }
 
+    @Test
+    public void modelAttribute() throws  Exception {
+        mockMvc.perform(post("/events/create"))
+                    .andDo(print());
+    }
 }
