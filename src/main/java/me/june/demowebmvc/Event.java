@@ -1,11 +1,13 @@
 package me.june.demowebmvc;
 
+import javax.validation.constraints.NotEmpty;
+
 public class Event {
 
     private Integer id;
 
+    @NotEmpty
     private String name;
-
 
     public Integer getId() {
         return id;

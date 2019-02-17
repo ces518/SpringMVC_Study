@@ -4,7 +4,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -181,7 +183,7 @@ public class SimpleController {
     public String eventsForm(
             Model model
     ){
-        model.addAttribute("events",new Event());
+        model.addAttribute("event",new Event());
         return "events/form";
     }
 
@@ -199,21 +201,29 @@ public class SimpleController {
      *
      * 생략이 가능하다.
      *
+     *
+     * @Valid 는 group을 사용할 수 없다.
+     * @Validated는 사용이가능
+     *
      * @param event
      * @return
      */
     @PostMapping("/events/create")
-    @ResponseBody
-    public Event create(
-            @ModelAttribute Event event
+    public String create(
+            @Validated @ModelAttribute Event event
             , BindingResult bindingResult
     ){
 
         if(bindingResult.hasErrors()){
-            System.out.println("error!!!");
+            return "events/form";
         }
 
-        return event;
+        return "redirect:/events";
+    }
+
+    @GetMapping("/events")
+    public String events(){
+        return "events/list";
     }
 
 }

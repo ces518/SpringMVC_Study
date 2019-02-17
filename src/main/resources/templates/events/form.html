@@ -11,7 +11,8 @@
     ${} variable 표현식
     *{} selection 표현식
 -->
-<form action="#" th:action="@{/events}" th:object="${events}">
+<form action="#" th:action="@{/events}" th:object="${event}">
+    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect date</p>
     <input type="text" title="name" th:field="*{name}"/>
 </form>
 </body>

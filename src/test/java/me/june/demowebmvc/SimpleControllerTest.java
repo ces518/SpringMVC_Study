@@ -10,9 +10,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -168,7 +171,17 @@ public class SimpleControllerTest {
 
     @Test
     public void modelAttribute() throws  Exception {
-        mockMvc.perform(post("/events/create"))
-                    .andDo(print());
+        ResultActions resultActions = mockMvc.perform(post("/events/create")
+                .param("name","june"))
+                .andDo(print());
+
+        // 해당 요청의 결과를 좀더 정확하게 테스트하고싶다면...
+        // ModelAndView를 꺼내와서 확인이 가능하다.
+        // BindingResult에 에러가 있다면 , 모델에는 해당 오브젝트와, BindingResult의 error객체가 담긴다.
+        ModelAndView modelAndView = resultActions.andReturn().getModelAndView();
+
+        Map<String, Object> model = modelAndView.getModel();
+
+        System.out.println(model.size());
     }
 }
