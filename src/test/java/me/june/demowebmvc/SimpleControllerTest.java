@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -183,5 +184,21 @@ public class SimpleControllerTest {
         Map<String, Object> model = modelAndView.getModel();
 
         System.out.println(model.size());
+    }
+
+    @Test
+    public void redirectAttribute() throws Exception {
+        Event newEvent = new Event();
+        newEvent.setId(1000);
+        newEvent.setName("juneZero");
+        mockMvc.perform(get("/test")
+                    //session 의 attributes에 값을 세팅하여 보낸다.
+                    .sessionAttr("time", LocalDate.now())
+                    //flashAttribute에 값을 세팅하여 보낸다.
+                    .flashAttr("newEvent",newEvent))
+                .andDo(print())
+                .andExpect(status().isOk())
+                //html본문에 p태그가 2개있는지 html본문을 테스트가능.
+                .andExpect(xpath("//p").nodeCount(2));
     }
 }
