@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -184,9 +185,9 @@ public class SimpleController {
 
     @GetMapping("/events/form")
     public String eventsForm(
-            Model model
+            Event event
+            ,Model model
     ){
-        model.addAttribute("event",new Event());
         return "events/form";
     }
 
@@ -303,4 +304,40 @@ public class SimpleController {
         Event newEvent = (Event) modelMap.get("newEvent");
         System.out.println(newEvent.getId() + " , " + newEvent.getName());
     }
+
+    /**
+     * @ModelAttribute의 또다른 사용법.
+     * @Controller , @ControllerAdvice 에서 사용할 클래스에서 모델정보를 초기화할때 사용한다.
+     * event라는 이름의 모델이 없을경우 , 초기화로 사용되며, 존재하는경우에는 동작하지않는다.
+     *
+     * @RequestMapping과 함께사용할경우 해당 핸들러 메소드에서 리턴하는 객체를 Model에 넣어준다.
+     *
+     *
+     * @return
+     */
+    @ModelAttribute("event")
+    public Event event() {
+        Event event = new Event();
+        event.setName("june0");
+        return event;
+    }
+
+    /**
+     * @InitBinder
+     * Class레벨에 바인더,커스텀발리데이터,포메터등을 설정할수있다.
+     *
+     * @InitBinder("event")
+     * > 값을 설정해주면 , 해당 값과 이름이 동일한 객체에만 바인더를 적용할수있다.
+     *
+     *
+     *
+     * @param webDataBinder
+     */
+    @InitBinder("event")
+    public void eventBinder(WebDataBinder webDataBinder) {
+        // id 라는 필드를 바인딩 제한.
+        webDataBinder.setAllowedFields("id");
+        webDataBinder.addValidators(new EventValidator());
+    }
+
 }
