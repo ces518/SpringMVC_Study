@@ -11,6 +11,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.w3c.dom.events.EventException;
 
 @Controller
 @SessionAttributes("event")
@@ -338,6 +339,33 @@ public class SimpleController {
         // id 라는 필드를 바인딩 제한.
         webDataBinder.setAllowedFields("id");
         webDataBinder.addValidators(new EventValidator());
+    }
+
+    /**
+     * @ExceptionHandler
+     * 특정 Exception이나 Custom한 Exception에 대한 핸들러를 정의할수있다..
+     *
+     * method arguments로 해당 exception, model ... 등등을 받을수있으며
+     * 해당 Exception 발생시 다양한 에러 핸들링을 커스텀하게 가능함.
+     *
+     * 여러개의 ExceptionHandler존재시, 가장 구체적인 Exception Handler가 동작한다.
+     *
+     * ex)
+     * CustomException이 RuntimeException의 상속구조이다.
+     *
+     * CustomException , RuntimeException 핸들러가있을경우 CustomExceptionHandler가 동작하게된다.
+     *
+     * RESTful APi 의 경우엔 ResponseEntity 로 Return하는 방식을 주로사용한다.
+     *
+     *
+     * @param ex
+     * @param modelMap
+     * @return
+     */
+    @ExceptionHandler
+    public String eventExceptionHanlder(EventException ex, ModelMap modelMap) {
+        modelMap.addAttribute("message","error...");
+        return "error";
     }
 
 }
